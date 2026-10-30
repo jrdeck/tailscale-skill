@@ -10,7 +10,7 @@ Tailscale tries three connection paths in order, all WireGuard-encrypted end-to-
 
 1. **Direct peer-to-peer** — preferred. NAT traversal (STUN, port mapping) establishes a direct tunnel. Lowest latency, full throughput.
 2. **Peer relay** — fallback through a user-operated relay device on the tailnet. Lower latency than DERP because the relay sits on your infrastructure.
-3. **DERP relay** — final fallback through Tailscale's global relay network. Always works.
+3. **DERP relay** — final fallback through Tailscale's global relay network when a client can reach a DERP server.
 
 All relays forward **encrypted** packets blindly — relays (peer or DERP) cannot decrypt traffic. The choice of path is per-peer-pair, not tailnet-wide.
 

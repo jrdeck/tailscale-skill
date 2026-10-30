@@ -159,25 +159,25 @@ Expose a local service to your tailnet (private — only tailnet members can acc
 
 ```bash
 # Proxy local port 3000 over HTTPS on port 443
-tailscale serve https / http://localhost:3000
+tailscale serve http://127.0.0.1:3000
 
 # Serve a local directory
-tailscale serve https /docs /path/to/files
+tailscale serve --set-path=/docs /path/to/files
 
 # Serve static text
-tailscale serve https /health text:"OK"
+tailscale serve --set-path=/health text:"OK"
 
 # TCP forwarding (raw, not HTTPS)
-tailscale serve tcp:5432 tcp://localhost:5432
+tailscale serve --tcp=5432 tcp://127.0.0.1:5432
 
 # TLS-terminated TCP
-tailscale serve tls-terminated-tcp:5432 tcp://localhost:5432
+tailscale serve --tls-terminated-tcp=5432 tcp://127.0.0.1:5432
 
 # Show current serve configuration
 tailscale serve status
 
 # Remove a handler
-tailscale serve https /docs off
+tailscale serve --https=443 --set-path=/docs off
 
 # Reset all serve config
 tailscale serve reset
@@ -191,7 +191,7 @@ Like `serve`, but exposes the service to the **public internet** (not just your 
 
 ```bash
 # Expose local port 3000 publicly
-tailscale funnel https / http://localhost:3000
+tailscale funnel http://127.0.0.1:3000
 
 # Show funnel status
 tailscale funnel status
@@ -203,7 +203,7 @@ tailscale funnel reset
 Key differences from serve:
 - Funnel traffic routes through Tailscale's servers (not peer-to-peer)
 - Available on ports 443, 8443, and 10000 only
-- Requires enabling Funnel in the tailnet policy file (`nodeAttr` with `funnel` capability)
+- Requires enabling Funnel in the tailnet policy file (`nodeAttrs` with the `funnel` capability)
 - Anyone on the internet can access the URL
 
 ## File transfer
@@ -287,7 +287,7 @@ Provision TLS certificates for your device's Tailscale FQDN:
 tailscale cert machine.tailnet-name.ts.net
 ```
 
-Creates `.crt` and `.key` files. Certificates are automatically renewed. Useful for services that need HTTPS (web servers, databases).
+Creates `.crt` and `.key` files for services that need HTTPS (web servers, databases). File-based certificates are **not** renewed automatically: schedule `tailscale cert` before expiry, install the replacement files, and reload the consuming service as required. Prefer Tailscale Serve or a supported Caddy integration when you want certificate renewal managed automatically.
 
 ## Administration
 
